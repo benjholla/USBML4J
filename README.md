@@ -21,7 +21,6 @@ This is a simple Java API for interacting with the original Dream Cheeky USB Mis
 	} else {
 		for(int i=0; i<launchers.length; i++){
 			MissileLauncher ml = launchers[i];
-			int launcherID = i+1;
 			ml.adjustVerticalPosition(500); // rotate up for 500 milliseconds from home position
 			ml.adjustVerticalPosition(-500); // rotate down for 500 milliseconds from home position
 			ml.adjustVerticalPosition(0); // return to vertical home position
