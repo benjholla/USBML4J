@@ -2,6 +2,7 @@ package usbml4j;
 
 import java.util.List;
 
+import javax.usb.UsbConfiguration;
 import javax.usb.UsbConst;
 import javax.usb.UsbControlIrp;
 import javax.usb.UsbDevice;
@@ -9,6 +10,8 @@ import javax.usb.UsbDeviceDescriptor;
 import javax.usb.UsbException;
 import javax.usb.UsbHostManager;
 import javax.usb.UsbHub;
+import javax.usb.UsbInterface;
+import javax.usb.UsbInterfacePolicy;
 
 public class MissileLauncher {
 
@@ -369,7 +372,25 @@ public class MissileLauncher {
 	private UsbDevice findMissileLauncher(short vendor, short product) {
 		try {
 			UsbHub hub = UsbHostManager.getUsbServices().getRootUsbHub();
-			return findMissileLauncher(hub, vendor, product);
+			UsbDevice device = findMissileLauncher(hub, vendor, product);
+			if(!OSUtils.isWindows()){
+				// on Mac/Unix we need to claim the USB interface
+				try {
+					UsbConfiguration configuration = device.getUsbConfiguration((byte) 1);
+			        UsbInterface usbInterface = configuration.getUsbInterface((byte) 1);
+			        usbInterface.claim(new UsbInterfacePolicy()
+			        {            
+			            @Override
+			            public boolean forceClaim(UsbInterface usbInterface)
+			            {
+			                return true;
+			            }
+			        });
+				} catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			return device;
 		} catch (Exception e) {
 			return null;
 		}
