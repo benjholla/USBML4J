@@ -22,12 +22,12 @@ This is a simple Java API for interacting with the original Dream Cheeky USB Mis
 		for(int i=0; i<launchers.length; i++){
 			MissileLauncher ml = launchers[i];
 			int launcherID = i+1;
-			System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(500));
-			System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(-500));
-			System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(0));
-			System.out.println("[Launcher " + launcherID + "] Horizontal Position: " + ml.adjustHorizontalPosition(500));
-			System.out.println("[Launcher " + launcherID + "] Horizontal Position: " + ml.adjustHorizontalPosition(-500));
-			System.out.println("[Launcher " + launcherID + "] Horizontal Position: " + ml.adjustHorizontalPosition(0));
-			System.out.println("[Launcher " + launcherID + "] Fired: " + ml.fire());
+			ml.adjustVerticalPosition(500); // rotate up for 500 milliseconds from home position
+			ml.adjustVerticalPosition(-500); // rotate down for 500 milliseconds from home position
+			ml.adjustVerticalPosition(0); // return to vertical home position
+			ml.adjustHorizontalPosition(500); // rotate right for 500 milliseconds from home position
+			ml.adjustHorizontalPosition(-500); // rotate left for 500 milliseconds from home position
+			ml.adjustHorizontalPosition(0); // return to horizontal home position
+			ml.fire(); // fire zeee missiles!!!!!!!
 		}
 	}
