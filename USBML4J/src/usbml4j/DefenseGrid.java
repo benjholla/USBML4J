@@ -23,9 +23,13 @@ public class DefenseGrid {
 	// private constructor so nobody can make a defense grid directly
 	private DefenseGrid() throws SecurityException, UsbException {
 		ArrayList<UsbDevice> devices = findMissileLaunchers(Constants.VENDOR_ID, Constants.PRODUCT_ID);
-		launchers = new MissileLauncher[devices.size()];
-		for(int i=0; i<devices.size(); i++){
-			launchers[i] = new MissileLauncher(devices.get(i));
+		if(devices.isEmpty()){
+			launchers = new MissileLauncher[]{};
+		} else {
+			launchers = new MissileLauncher[devices.size()];
+			for(int i=0; i<devices.size(); i++){
+				launchers[i] = new MissileLauncher(devices.get(i));
+			}
 		}
 	}
 	
@@ -54,24 +58,26 @@ public class DefenseGrid {
 	 * Initializes all MissileLaunchers (performs homing operations) in parallel
 	 */
 	public void initializeMissileLaunchers(){
-		for(final MissileLauncher launcher : launchers){
-			// run the homing operation in a background thread 
-			// so we can move on to the next launcher
-			new Thread(new Runnable(){
-				@Override
-				public void run() {
-					try {
-						launcher.initialize();
-					} catch (UsbException e) {
-						e.printStackTrace();
+		if(launchers.length > 0){
+			for(final MissileLauncher launcher : launchers){
+				// run the homing operation in a background thread 
+				// so we can move on to the next launcher
+				new Thread(new Runnable(){
+					@Override
+					public void run() {
+						try {
+							launcher.initialize();
+						} catch (UsbException e) {
+							e.printStackTrace();
+						}
 					}
-				}
-			}).start();
+				}).start();
+			}
+			// wait for all launchers to complete homing operations
+			try {
+				Thread.sleep(Constants.HOMING_PERIOD + 5000);
+			} catch (InterruptedException e) {}
 		}
-		// wait for all launchers to complete homing operations
-		try {
-			Thread.sleep(Constants.HOMING_PERIOD + 5000);
-		} catch (InterruptedException e) {}
 	}
 	
 	/**

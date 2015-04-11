@@ -25,8 +25,6 @@ public class MissileLauncher {
 			throw new UsbException("USB Missile Launcher could not be found.  Try disconnecting and reconnecting USB from port.");
 		}
 		this.device = device;
-
-		System.out.println("Created Missile Launcher!");
 	}
 
 	/**
@@ -39,15 +37,18 @@ public class MissileLauncher {
 		return (device != null) && isInitialized;
 	}
 
+	/**
+	 * Initializes the missile launcher by performing first time zeroing operations
+	 * @return
+	 * @throws UsbException
+	 */
 	public boolean initialize() throws UsbException {
-		System.out.println("Started Homing Missile Launcher!");
 		if (device != null) {
 			// this missile launcher just dead reckons its position,
 			// so its good to set the position to a known starting point
 			zero();
 			isInitialized = true;
 		}
-		System.out.println("Finished Homing Missile Launcher!");
 		return isInitialized;
 	}
 

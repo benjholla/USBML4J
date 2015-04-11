@@ -8,20 +8,31 @@ import usbml4j.MissileLauncher;
 public class TestMissileLauncher {
 
 	public static void main(String[] args) throws UsbException {
+		
+		// discover all USB missile launchers
 		DefenseGrid grid = DefenseGrid.getInstance();
+		
+		// perform initialization (zeroing) of each missile launcher in parallel
 		grid.initializeMissileLaunchers();
+		
+		// get an array of missile launchers to control
 		MissileLauncher[] launchers = grid.getMissileLaunchers();
 		
-		for(int i=0; i<launchers.length; i++){
-			MissileLauncher ml = launchers[i];
-			int launcherID = i+1;
-			System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(500));
-			System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(-500));
-			System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(0));
-			System.out.println("[Launcher " + launcherID + "] Horizontal Position: " + ml.adjustHorizontalPosition(500));
-			System.out.println("[Launcher " + launcherID + "] Horizontal Position: " + ml.adjustHorizontalPosition(-500));
-			System.out.println("[Launcher " + launcherID + "] Horizontal Position: " + ml.adjustHorizontalPosition(0));
-			System.out.println("[Launcher " + launcherID + "] Fired: " + ml.fire());
+		// test each missile launchers ability to aim up, down, left, right, and fire
+		if(launchers.length == 0){
+			System.out.println("No USB Missile Launchers could not be found.  Try disconnecting and reconnecting USB devices from port.");
+		} else {
+			for(int i=0; i<launchers.length; i++){
+				MissileLauncher ml = launchers[i];
+				int launcherID = i+1;
+				System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(500));
+				System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(-500));
+				System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(0));
+				System.out.println("[Launcher " + launcherID + "] Horizontal Position: " + ml.adjustHorizontalPosition(500));
+				System.out.println("[Launcher " + launcherID + "] Horizontal Position: " + ml.adjustHorizontalPosition(-500));
+				System.out.println("[Launcher " + launcherID + "] Horizontal Position: " + ml.adjustHorizontalPosition(0));
+				System.out.println("[Launcher " + launcherID + "] Fired: " + ml.fire());
+			}
 		}
 	}
 
