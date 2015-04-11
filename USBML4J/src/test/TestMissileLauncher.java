@@ -8,12 +8,15 @@ public class TestMissileLauncher {
 
 	public static void main(String[] args) throws UsbException {
 		MissileLauncher ml = new MissileLauncher();
-		ml.aimDown(500);
-		ml.aimUp(500);
-		ml.aimLeft(500);
-		ml.aimRight(500);
-		ml.fire();
-		ml.reload();
+		System.out.println("Vertical Position: " + ml.adjustVerticalPosition(500));
+		System.out.println("Vertical Position: " + ml.adjustVerticalPosition(-500));
+		System.out.println("Vertical Position: " + ml.adjustVerticalPosition(0));
+		System.out.println("Horizontal Position: " + ml.adjustHorizontalPosition(500));
+		System.out.println("Horizontal Position: " + ml.adjustHorizontalPosition(-500));
+		System.out.println("Horizontal Position: " + ml.adjustHorizontalPosition(0));
+		System.out.println("Fired: " + ml.fire());
+		System.out.println("Reloaded: " + ml.isReloaded());
+		System.out.println("Reloaded: " + ml.reload());
 	}
 
 }
