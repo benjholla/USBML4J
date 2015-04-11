@@ -79,6 +79,32 @@ public class MissileLauncher {
 		}
 		hault();
 	}
+	
+	public void aimRight(int period) throws UsbException {
+		sendCommand(device, Command.AIM_RIGHT);
+		for(int i=0; i<period; i++){
+			if(horizontalPosition >= Constants.MAX_HORIZONTAL){
+				break;
+			} else {
+				sleep(1);
+				horizontalPosition++;
+			}
+		}
+		hault();
+	}
+	
+	public void aimLeft(int period) throws UsbException {
+		sendCommand(device, Command.AIM_LEFT);
+		for(int i=0; i<period; i++){
+			if(horizontalPosition <= Constants.MIN_HORIZONTAL){
+				break;
+			} else {
+				sleep(1);
+				horizontalPosition--;
+			}
+		}
+		hault();
+	}
 
 	/**
 	 * Fires the USB missile launcher

@@ -20,9 +20,9 @@ public class Constants {
 	public final static int RELOAD_PERIOD = 4500;
 	
 	// maximum bounds on aiming up, down, left, or right
-	public final static int MIN_HORIZONTAL = -500;
-	public final static int MAX_HORIZONTAL = 500;
-	public final static int MIN_VERTICAL = -500;
-	public final static int MAX_VERTICAL = 500;
+	public final static int MIN_HORIZONTAL = -500; // most down you can aim
+	public final static int MAX_HORIZONTAL = 500; // most up you can aim
+	public final static int MIN_VERTICAL = -500; // most left you can aim
+	public final static int MAX_VERTICAL = 500; // most right you can aim
 
 }

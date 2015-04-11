@@ -10,6 +10,8 @@ public class TestMissileLauncher {
 		MissileLauncher ml = new MissileLauncher();
 		ml.aimDown(500);
 		ml.aimUp(500);
+		ml.aimLeft(500);
+		ml.aimRight(500);
 		ml.fire();
 		ml.reload();
 	}
