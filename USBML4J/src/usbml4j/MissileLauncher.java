@@ -1,17 +1,9 @@
 package usbml4j;
 
-import java.util.List;
-
-import javax.usb.UsbConfiguration;
 import javax.usb.UsbConst;
 import javax.usb.UsbControlIrp;
 import javax.usb.UsbDevice;
-import javax.usb.UsbDeviceDescriptor;
 import javax.usb.UsbException;
-import javax.usb.UsbHostManager;
-import javax.usb.UsbHub;
-import javax.usb.UsbInterface;
-import javax.usb.UsbInterfacePolicy;
 
 public class MissileLauncher {
 
@@ -23,18 +15,18 @@ public class MissileLauncher {
 	}
 
 	private UsbDevice device = null;
+	private boolean isInitialized = false;
 	private boolean isReloaded = true; // assume we are reloaded by default
 	private int verticalPosition;
 	private int horizontalPosition;
 
-	public MissileLauncher() throws UsbException {
-		device = findMissileLauncher(Constants.VENDOR_ID, Constants.PRODUCT_ID);
-		if(device == null){
+	public MissileLauncher(UsbDevice device) throws UsbException {
+		if (device == null) {
 			throw new UsbException("USB Missile Launcher could not be found.  Try disconnecting and reconnecting USB from port.");
 		}
-		// this missile launcher just dead reckons its position, 
-		// so its good to set the position to a known starting point
-		home();
+		this.device = device;
+
+		System.out.println("Created Missile Launcher!");
 	}
 
 	/**
@@ -43,8 +35,20 @@ public class MissileLauncher {
 	 * 
 	 * @return
 	 */
-	public boolean isConnected() {
-		return device != null;
+	public boolean isInitialized() {
+		return (device != null) && isInitialized;
+	}
+
+	public boolean initialize() throws UsbException {
+		System.out.println("Started Homing Missile Launcher!");
+		if (device != null) {
+			// this missile launcher just dead reckons its position,
+			// so its good to set the position to a known starting point
+			zero();
+			isInitialized = true;
+		}
+		System.out.println("Finished Homing Missile Launcher!");
+		return isInitialized;
 	}
 
 	/**
@@ -57,8 +61,8 @@ public class MissileLauncher {
 	}
 
 	/**
-	 * Returns the vertical position 
-	 * Ranges from Constants.MAX_VERTICAL to Constants.MIN_VERTICAL
+	 * Returns the vertical position Ranges from Constants.MAX_VERTICAL to
+	 * Constants.MIN_VERTICAL
 	 * 
 	 * @return
 	 */
@@ -67,8 +71,8 @@ public class MissileLauncher {
 	}
 
 	/**
-	 * Returns the vertical position 
-	 * Ranges from Constants.MAX_HORIZONTAL to Constants.MIN_HORIZONTAL
+	 * Returns the vertical position Ranges from Constants.MAX_HORIZONTAL to
+	 * Constants.MIN_HORIZONTAL
 	 * 
 	 * @return
 	 */
@@ -82,7 +86,7 @@ public class MissileLauncher {
 	 * @throws UsbException
 	 */
 	public void hault() throws UsbException {
-		if (isConnected()) {
+		if (isInitialized()) {
 			// HACK: only reliable way to stop firing is to do an aim action and
 			// then send hault command
 			sendCommand(device, Command.AIM_LEFT);
@@ -97,32 +101,21 @@ public class MissileLauncher {
 	 * @throws UsbException
 	 */
 	public void home() throws UsbException {
-		if (isConnected()) {
-			// go all the way down
-			sendCommand(device, Command.AIM_DOWN);
-			sleep(5000);
-			verticalPosition = Constants.MIN_VERTICAL;
-			adjustVerticalPosition(0);
-
-			// go all the way left
-			sendCommand(device, Command.AIM_LEFT);
-			sleep(10000);
-			horizontalPosition = Constants.MIN_HORIZONTAL;
-			adjustHorizontalPosition(0);
-
-			hault();
+		if (isInitialized()) {
+			zero();
 		}
 	}
 
 	/**
-	 * Moves the missile launcher to the vertical position coordinate
-	 * Range is from Constants.MAX_VERTICAL to Constants.MIN_VERTICAL
+	 * Moves the missile launcher to the vertical position coordinate Range is
+	 * from Constants.MAX_VERTICAL to Constants.MIN_VERTICAL
+	 * 
 	 * @param position
 	 * @return
 	 * @throws UsbException
 	 */
 	public int adjustVerticalPosition(int position) throws UsbException {
-		if (isConnected()) {
+		if (isInitialized()) {
 			if (verticalPosition < position) {
 				sendCommand(device, Command.AIM_UP);
 				while (verticalPosition < position) {
@@ -150,14 +143,15 @@ public class MissileLauncher {
 	}
 
 	/**
-	 * Moves the missile launcher to the vertical position coordinate
-	 * Range is from Constants.MAX_VERTICAL to Constants.MIN_VERTICAL
+	 * Moves the missile launcher to the vertical position coordinate Range is
+	 * from Constants.MAX_VERTICAL to Constants.MIN_VERTICAL
+	 * 
 	 * @param position
 	 * @return
 	 * @throws UsbException
 	 */
 	public int adjustHorizontalPosition(int position) throws UsbException {
-		if (isConnected()) {
+		if (isInitialized()) {
 			if (horizontalPosition < position) {
 				sendCommand(device, Command.AIM_RIGHT);
 				while (horizontalPosition < position) {
@@ -185,14 +179,15 @@ public class MissileLauncher {
 	}
 
 	/**
-	 * Aims the gun upward for the given number of milliseconds
-	 * Does not exceed the maximum range of Constants.MAX_VERTICAL
+	 * Aims the gun upward for the given number of milliseconds Does not exceed
+	 * the maximum range of Constants.MAX_VERTICAL
+	 * 
 	 * @param period
 	 * @return Returns the current vertical position
 	 * @throws UsbException
 	 */
 	public int aimUp(long period) throws UsbException {
-		if (isConnected()) {
+		if (isInitialized()) {
 			sendCommand(device, Command.AIM_UP);
 			for (int i = 0; i < period; i++) {
 				if (verticalPosition >= Constants.MAX_VERTICAL) {
@@ -209,12 +204,13 @@ public class MissileLauncher {
 
 	/**
 	 * Aims the gun downward for the given number of milliseconds
+	 * 
 	 * @param period
 	 * @return Returns the current vertical position
 	 * @throws UsbException
 	 */
 	public int aimDown(int period) throws UsbException {
-		if (isConnected()) {
+		if (isInitialized()) {
 			sendCommand(device, Command.AIM_DOWN);
 			for (int i = 0; i < period; i++) {
 				if (verticalPosition <= Constants.MIN_VERTICAL) {
@@ -231,12 +227,13 @@ public class MissileLauncher {
 
 	/**
 	 * Aims the gun right for the given number of milliseconds
+	 * 
 	 * @param period
 	 * @return Returns the current horizontal position
 	 * @throws UsbException
 	 */
 	public int aimRight(int period) throws UsbException {
-		if (isConnected()) {
+		if (isInitialized()) {
 			sendCommand(device, Command.AIM_RIGHT);
 			for (int i = 0; i < period; i++) {
 				if (horizontalPosition >= Constants.MAX_HORIZONTAL) {
@@ -253,12 +250,13 @@ public class MissileLauncher {
 
 	/**
 	 * Aims the gun left for the given number of milliseconds
+	 * 
 	 * @param period
 	 * @return Returns the current horizontal position
 	 * @throws UsbException
 	 */
 	public int aimLeft(int period) throws UsbException {
-		if (isConnected()) {
+		if (isInitialized()) {
 			sendCommand(device, Command.AIM_LEFT);
 			for (int i = 0; i < period; i++) {
 				if (horizontalPosition <= Constants.MIN_HORIZONTAL) {
@@ -280,7 +278,7 @@ public class MissileLauncher {
 	 * @throws UsbException
 	 */
 	public boolean fire() throws UsbException {
-		if (isConnected()) {
+		if (isInitialized()) {
 			if (!isReloaded) {
 				reload();
 			}
@@ -299,7 +297,7 @@ public class MissileLauncher {
 	 * @throws UsbException
 	 */
 	public boolean reload() throws UsbException {
-		if (isConnected()) {
+		if (isInitialized()) {
 			if (!isReloaded) {
 				sendCommand(device, Command.RELOAD);
 				sleep(Constants.RELOAD_PERIOD);
@@ -308,6 +306,28 @@ public class MissileLauncher {
 			}
 		}
 		return isReloaded;
+	}
+
+	/**
+	 * Performs first time setup to zero the device Does not check if device is
+	 * initialized because this routine is called during initialization
+	 * 
+	 * @throws UsbException
+	 */
+	private void zero() throws UsbException {
+		// go all the way down
+		sendCommand(device, Command.AIM_DOWN);
+		sleep(Constants.HOMING_DOWN_PERIOD);
+		verticalPosition = Constants.MIN_VERTICAL;
+		adjustVerticalPosition(0);
+
+		// go all the way left
+		sendCommand(device, Command.AIM_LEFT);
+		sleep(Constants.HOMING_LEFT_PERIOD);
+		horizontalPosition = Constants.MIN_HORIZONTAL;
+		adjustHorizontalPosition(0);
+
+		hault();
 	}
 
 	/**
@@ -364,55 +384,6 @@ public class MissileLauncher {
 		UsbControlIrp irp = device.createUsbControlIrp((byte) (UsbConst.REQUESTTYPE_TYPE_CLASS | UsbConst.REQUESTTYPE_RECIPIENT_INTERFACE), (byte) 0x09, (short) 0x0200, (short) 0);
 		irp.setData(message);
 		device.syncSubmit(irp);
-	}
-
-	/**
-	 * Recursively searches for the USB missile launcher
-	 */
-	private UsbDevice findMissileLauncher(short vendor, short product) {
-		try {
-			UsbHub hub = UsbHostManager.getUsbServices().getRootUsbHub();
-			UsbDevice device = findMissileLauncher(hub, vendor, product);
-			if(!OSUtils.isWindows()){
-				// on Mac/Unix we need to claim the USB interface
-				try {
-					UsbConfiguration configuration = device.getUsbConfiguration((byte) 1);
-			        UsbInterface usbInterface = configuration.getUsbInterface((byte) 1);
-			        usbInterface.claim(new UsbInterfacePolicy()
-			        {            
-			            @Override
-			            public boolean forceClaim(UsbInterface usbInterface)
-			            {
-			                return true;
-			            }
-			        });
-				} catch (Exception e){
-					e.printStackTrace();
-				}
-			}
-			return device;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private UsbDevice findMissileLauncher(UsbHub hub, short vendor, short product) {
-		UsbDevice launcher = null;
-		for (UsbDevice device : (List<UsbDevice>) hub.getAttachedUsbDevices()) {
-			if (device.isUsbHub()) {
-				launcher = findMissileLauncher((UsbHub) device, vendor, product);
-				if (launcher != null) {
-					return launcher;
-				}
-			} else {
-				UsbDeviceDescriptor desc = device.getUsbDeviceDescriptor();
-				if (desc.idVendor() == vendor && desc.idProduct() == product) {
-					return device;
-				}
-			}
-		}
-		return null;
 	}
 
 }

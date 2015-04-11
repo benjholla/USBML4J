@@ -20,6 +20,12 @@ public class Constants {
 	public final static long RELOAD_PERIOD = 4500;
 	public final static long AIM_PERIOD = 1;
 
+	// conservative time in milliseconds required to reach all the way 
+	// down and left from any position
+	public final static long HOMING_DOWN_PERIOD = 5000;
+	public final static long HOMING_LEFT_PERIOD = 10000;
+	public final static long HOMING_PERIOD = HOMING_DOWN_PERIOD + HOMING_LEFT_PERIOD;
+	
 	// maximum bounds on aiming up, down, left, or right
 	// by design these bounds correspond to one AIM_PERIOD which is 1
 	// millisecond this could be read as 1 second of movement time is allowed
