@@ -1,7 +1,7 @@
 # USBML4J
 A USB Missile Launcher for Java library
 
-This is a simple Java API for interacting with the original Dream Cheeky USB Missile Launcher (see picture below).  Works on Windows, Mac, and Linux.
+This is a simple Java API for interacting with the original Dream Cheeky USB Missile Launcher (see picture below).  Works on Windows, Mac, and Linux.  Theoretically, the `DefenseGrid` should support up to 127 devices per USB hub.
 
 ![Supported Missile Launcher](missile_launcher.jpg)
 
