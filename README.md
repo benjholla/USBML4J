@@ -17,7 +17,7 @@ This is a simple Java API for interacting with the original Dream Cheeky USB Mis
 		
 	// test each missile launchers ability to aim up, down, left, right, and fire
 	if(launchers.length == 0){
-		System.out.println("No USB Missile Launchers could not be found.  Try disconnecting and reconnecting USB devices from port.");
+		System.out.println("No USB Missile Launchers could be found.  Try disconnecting and reconnecting USB devices from port.");
 	} else {
 		for(int i=0; i<launchers.length; i++){
 			MissileLauncher ml = launchers[i];
