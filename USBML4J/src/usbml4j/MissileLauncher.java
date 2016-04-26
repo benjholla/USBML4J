@@ -339,7 +339,7 @@ public class MissileLauncher {
 	private void sleep(long sleepDelay) {
 		try {
 			Thread.sleep(sleepDelay);
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
 			// do nothing if sleeping fails
 		}
 	}
