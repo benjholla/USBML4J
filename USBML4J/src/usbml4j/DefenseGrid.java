@@ -108,14 +108,12 @@ public class DefenseGrid {
 						try {
 							UsbConfiguration configuration = device.getUsbConfiguration((byte) 1);
 					        UsbInterface usbInterface = configuration.getUsbInterface((byte) 1);
-					        usbInterface.claim(new UsbInterfacePolicy()
-					        {            
+					        /*usbInterface.claim(new UsbInterfacePolicy() {            
 					            @Override
-					            public boolean forceClaim(UsbInterface usbInterface)
-					            {
+					            public boolean forceClaim(UsbInterface usbInterface) {
 					                return true;
 					            }
-					        });
+					        });*/
 						} catch (Exception e){
 							e.printStackTrace();
 						}
