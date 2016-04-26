@@ -22,9 +22,9 @@ public class TestMissileLauncher {
 		if(launchers.length == 0){
 			System.out.println("No USB Missile Launchers could not be found.  Try disconnecting and reconnecting USB devices from port.");
 		} else {
-			for(int i=0; i<launchers.length; i++){
-				MissileLauncher ml = launchers[i];
-				int launcherID = i+1;
+			int launcherID = 0; // launcher's index
+			for(MissileLauncher ml : launchers){
+				launcherID++;
 				System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(500));
 				System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(-500));
 				System.out.println("[Launcher " + launcherID + "] Vertical Position: " + ml.adjustVerticalPosition(0));
