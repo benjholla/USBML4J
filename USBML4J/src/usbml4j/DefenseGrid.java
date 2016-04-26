@@ -104,7 +104,7 @@ public class DefenseGrid {
 				if (desc.idVendor() == vendor && desc.idProduct() == product) {
 					// device is a missile launcher, claim the device if we have to
 					if(OSUtils.isMac()){
-						// on Mac/Unix we need to claim the USB interface
+						// on OSX we need to claim the USB interface
 						try {
 							UsbConfiguration configuration = device.getUsbConfiguration((byte) 1);
 					        UsbInterface usbInterface = configuration.getUsbInterface((byte) 1);
